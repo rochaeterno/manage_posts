@@ -16,9 +16,20 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->query('tag')) {
+            $tag = Tag::where('name', '=', strtolower($request->query('tag')))->first();
+            if ($tag) {
+                $tagId = $tag->id;
+                $posts = Post::whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tag_id', '=', $tagId);
+                })->get();
+            }
+        }
+
         $posts = Post::all();
+
         return PostsResource::collection($posts);
     }
 
@@ -96,10 +107,10 @@ class PostController extends Controller
                     $post->tags()->detach($tag->id);
                 }
                 foreach ($tags as &$tag) {
-                    $requested_tag = Tag::where('name', '=', $tag)->first();
+                    $requested_tag = Tag::where('name', '=', strtolower($tag))->first();
 
                     if (!$requested_tag) {
-                        $new_tag = Tag::create(['name' => $tag]);
+                        $new_tag = Tag::create(['name' => strtolower($tag)]);
                         $requested_tag = Tag::find($new_tag->id);
                     }
 
