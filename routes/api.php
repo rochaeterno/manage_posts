@@ -15,9 +15,5 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 // These are the auto generated routes, is important allocate this code in the end of this archive otherwise this could rewrite the others routes of his same controller
 Route::apiResource('posts', PostController::class);

@@ -23,13 +23,13 @@ class PostRequest extends FormRequest
      */
     public function rules()
     {
-        $dynamicRule = $this->method() == "PUT" ? "required" : "nullable";
+        $updateRules = $this->method() == "PUT" ? "required" : "nullable";
         return [
-            "id" => $dynamicRule . "|string",
+            "id" => $updateRules . "|integer",
             "title" => "required|string",
             "author" => "required|string",
             "content" => "required|string",
-            "tags" => ["required","array","min:1"],
+            "tags" => "required|array|min:1"
         ];
     }
 }
