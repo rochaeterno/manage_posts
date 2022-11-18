@@ -23,9 +23,7 @@ class PostRequest extends FormRequest
      */
     public function rules()
     {
-        $updateRules = $this->method() == "PUT" ? "required" : "nullable";
         return [
-            "id" => $updateRules . "|integer",
             "title" => "required|string",
             "author" => "required|string",
             "content" => "required|string",

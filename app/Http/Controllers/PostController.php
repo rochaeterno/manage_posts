@@ -40,7 +40,6 @@ class PostController extends Controller
 
             if ($post) {
                 foreach ($tags as &$tag) {
-                    // ddd($tag);
                     $requested_tag = Tag::where('name', '=', $tag)->first();
 
                     if (!$requested_tag) {
@@ -82,9 +81,44 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $payload = array_merge($request->validated());
+            $post->update($payload);
+
+            $tags = $request->input('tags');
+
+            if ($post) {
+                foreach ($post->tags as &$tag) {
+                    $post->tags()->detach($tag->id);
+                }
+                foreach ($tags as &$tag) {
+                    $requested_tag = Tag::where('name', '=', $tag)->first();
+
+                    if (!$requested_tag) {
+                        $new_tag = Tag::create(['name' => $tag]);
+                        $requested_tag = Tag::find($new_tag->id);
+                    }
+
+                    $post->tags()->attach($requested_tag->id);
+                }
+            }
+
+            DB::commit();
+
+            $result = Post::find($post->id);
+            return new PostsResource($result);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => true,
+                'message' => "Não foi possivel editar o post. Por favor entre em contato com o administrador do sistema.",
+                "serve_error_message" => $e->getMessage()
+            ], 402);
+        }
     }
 
     /**
@@ -99,8 +133,8 @@ class PostController extends Controller
             if ($post->delete()) {
                 return response()->json([
                     'error' => false,
-                    'message' => "A notícia selecionada foi deletada com sucesso.",
-                ], 200);
+                    'message' => "204 No Content",
+                ], 204);
             }
         } catch (\Exception $e) {
             return response()->json([
