@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagsCollection extends ResourceCollection
+
+class TagsCollection extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
@@ -14,8 +15,13 @@ class TagsCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection,
-        ];
+        try {
+            return $this->name;
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                "serve_error_message" => $e->getMessage()
+            ], 402);
+        }
     }
 }
