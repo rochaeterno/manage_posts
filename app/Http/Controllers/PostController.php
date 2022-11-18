@@ -98,11 +98,10 @@ class PostController extends Controller
             DB::beginTransaction();
 
             $payload = array_merge($request->validated());
-            $post->update($payload);
-
-            $tags = $request->input('tags');
-
             if ($post) {
+                $post->update($payload);
+                $tags = $request->input('tags');
+
                 foreach ($post->tags as &$tag) {
                     $post->tags()->detach($tag->id);
                 }
@@ -116,12 +115,12 @@ class PostController extends Controller
 
                     $post->tags()->attach($requested_tag->id);
                 }
+
+                DB::commit();
+
+                $result = Post::findOrFail($post->id);
+                return new PostsResource($result);
             }
-
-            DB::commit();
-
-            $result = Post::find($post->id);
-            return new PostsResource($result);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
