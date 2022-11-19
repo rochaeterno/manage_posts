@@ -1,0 +1,230 @@
+openapi: 3.0.2
+info:
+  title: ManagePosts - OpenAPI 3.0
+  version: 1.0.0
+  description: "Este projeto foi desenvolvido com o intuito de pleitear uma vaga na Logaroo e se propõe a apresentar uma API que controle as requisições sobre postagens.  "
+  contact:
+    email: robertodutraemp@gmail.com
+servers:
+- url: http://localhost/api
+paths:
+  /posts:
+    post:
+      tags:
+      - Posts
+      summary: Adiciona um novo post ao DB.
+      description: Adiciona um novo post ao banco de dados já atrelado a suas tags
+      operationId: addPost
+      requestBody:
+        description: Adiciona um novo post ao banco de dados.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '405':
+          description: Invalid input
+      security:
+      - post_auth:
+        - write:pets
+        - read:pets
+    get:
+      tags:
+      - Posts
+      summary: Encontra um post pela tag.
+      description: Encontra um post com base em uma unica tag fornecida pelo host. Caso nenhuma tag seja fornecida na filtragem a API retornará todas os posts.
+      operationId: findPostsByTags
+      parameters:
+      - name: tags
+        in: query
+        description: Tags to filter by
+        required: false
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid tag value
+  /posts/{postId}:
+    put:
+      tags:
+      - Posts
+      summary: Modifica um post já criado.
+      description: Usa o id de um Post já existente para encontrar-lo no banco de dados e então modificar-lo.
+      operationId: updatePost
+      requestBody:
+        description: Update an existent post in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Post not found
+        '405':
+          description: Validation exception
+      security:
+      - post_auth:
+        - write:pets
+        - read:pets
+    get:
+      tags:
+      - Posts
+      summary: Encontra um post pelo ID
+      description: Retorna um post de acordo com o id inserido.
+      operationId: getPostById
+      parameters:
+      - name: postId
+        in: path
+        description: id do post a ser retornado.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Post not found
+    delete:
+      tags:
+      - Posts
+      summary: Deleta um post existente
+      description: Deleta um post existente mantendo suas tags.
+      operationId: deletePost
+      parameters:
+      - name: api_key
+        in: header
+        description: ''
+        required: false
+        schema:
+          type: string
+      - name: postId
+        in: path
+        description: id do post a ser deletado.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '400':
+          description: Invalid post value
+      security:
+      - post_auth:
+        - write:pets
+        - read:pets
+components:
+  schemas:
+    Post:
+      required:
+      - name
+      - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: doggie
+        author:
+          type: string
+          example: doggie
+        tags:
+          type: array
+      xml:
+        name: post
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    Pet:
+      description: Pet object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Post'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Post'
+  securitySchemes:
+    post_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
