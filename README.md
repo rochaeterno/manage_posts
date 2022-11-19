@@ -1,66 +1,35 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Desafio Post Management Logaroo
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+### 📝Sobre:
+Este projeto foi desenvolvido com o intuito de pleitear uma vaga na Logaroo e se propõe a apresentar uma API que controle as requisições sobre postagens.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 💻 Tecnologias Utilizadas:
+Conforme solicitado, o sistema utiliza Laravel para seu desenvolvimento contando com o uso de recursos como Laravel Sail, PHP Unit e PHPMyAdmin.
+Para o DB foi selecionado o MySQL por afinidade do desenvolvedor. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🔧 Preparando o sistema para o uso:
+Após baixar o repositório, deve-se instalar suas dependencias. Por conveniência, foi disponibilizado um arquivo ```deploy.sh``` que se encarregará de executar os scripts de instalação. Para conseguir executar este arquivo, é necessário ter uma maquina Unix com Docker e PHP 8.1 ou superior instalado. Depois da configuração inicial, acesse a pasta do projeto clonado e execute os comandos:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+ 
+  #### Inicie o Docker
+  ```sudo service docker start```
 
-## Learning Laravel
+  #### Crie um alias para o Laravel Sail
+  ```alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+  #### Execute o arquivo de deploy
+  ```. deploy.sh```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+  #### Inicie o servidor
+  ```sail up -d```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+Após a execução dos comandos, o sistema está pronto para ser testado. No arquivo de deploy, existe uma seeder que popula o banco de dados com alguns posts e tags.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### ❔ Como testar o sistema?
+Com o servidor docker iniciado e dentro da pasta do projeto execute o comando ```sail artisan test``` que por sua vez rodará o teste automatizado já pré-programado no sistema.
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### ❔ Como testar manualmente as rotas da API
+Você tambem pode testar manualmente a API, seja através do arquivo YALM do OpenAPI 3 ou através de um programa que simule requisições como o insominia.
+Para testar a API manualmente basta iniciar o servidor docker e acessar o endereço http://localhost/api/docs, caso prefira ultilizar o Insominia ou algum outro programa de sua preferência nesta url você encontrará as rotas assim como suas regras de uso.
