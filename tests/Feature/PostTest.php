@@ -67,6 +67,12 @@ class PostTest extends TestCase
             "author" => $payload['author'],
             "content" => $payload['content']
         ]);
+
+        foreach ($payload['tags'] as $tag) {
+            $this->assertDatabaseHas('tags', [
+                "name" => $tag
+            ]);
+        }
     }
 
     /**
