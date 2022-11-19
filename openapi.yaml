@@ -200,8 +200,3 @@ components:
           type: string
       xml:
         name: '##default'
-  securitySchemes:
-    x-requested-with:
-      type: apiKey
-      name: x-requested-with
-      in: header

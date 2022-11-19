@@ -28,5 +28,8 @@ Após baixar o repositório, deve-se instalar suas dependencias. Por conveniênc
 Após a execução dos comandos, o sistema está pronto para ser testado. No arquivo de deploy, existe uma seeder que popula o banco de dados com alguns posts e tags.
 
 ### ❔ Como testar o sistema?
+Com o servidor docker iniciado e dentro da pasta do projeto execute o comando ```sail artisan test``` que por sua vez rodará o teste automatizado já pré-programado no sistema.
 
 ### ❔ Como testar manualmente as rotas da API
+Você tambem pode testar manualmente a API, seja através do arquivo YALM do OpenAPI 3 ou através de um programa que simule requisições como o insominia.
+Para testar a API manualmente basta iniciar o servidor docker e acessar o endereço http://localhost/api/docs, caso prefira ultilizar o Insominia ou algum outro programa de sua preferência nesta url você encontrará as rotas assim como suas regras de uso.

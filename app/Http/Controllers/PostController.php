@@ -21,12 +21,16 @@ class PostController extends Controller
         $posts = Post::all();
         if ($request->query('tag')) {
             $tag = Tag::where('name', '=', strtolower($request->query('tag')))->first();
-            if ($tag) {
+            if ($tag->count() >= 1) {
                 $tagId = $tag->id;
-                $posts = Post::whereHas('tags', function ($q) use ($tagId) {
+                $filtered_post = Post::whereHas('tags', function ($q) use ($tagId) {
                     $q->where('tag_id', '=', $tagId);
                 })->get();
             }
+        }
+
+        if ($filtered_post->count() >= 1) {
+            $posts = $filtered_post;
         }
 
         return PostsResource::collection($posts);
