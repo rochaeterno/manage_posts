@@ -40,10 +40,6 @@ paths:
                 $ref: '#/components/schemas/Post'
         '405':
           description: Invalid input
-      security:
-      - post_auth:
-        - write:pets
-        - read:pets
     get:
       tags:
       - Posts
@@ -51,7 +47,7 @@ paths:
       description: Encontra um post com base em uma unica tag fornecida pelo host. Caso nenhuma tag seja fornecida na filtragem a API retornará todas os posts.
       operationId: findPostsByTags
       parameters:
-      - name: tags
+      - name: tag
         in: query
         description: Tags to filter by
         required: false
@@ -83,6 +79,14 @@ paths:
       summary: Modifica um post já criado.
       description: Usa o id de um Post já existente para encontrar-lo no banco de dados e então modificar-lo.
       operationId: updatePost
+      parameters:
+      - name: postId
+        in: path
+        description: id do post a ser modificado.
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         description: Update an existent post in the store
         content:
@@ -107,15 +111,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Post'
         '400':
-          description: Invalid ID supplied
+          description: o id fornecido não é valido
         '404':
-          description: Post not found
+          description: Post não encontrado
         '405':
           description: Validation exception
-      security:
-      - post_auth:
-        - write:pets
-        - read:pets
     get:
       tags:
       - Posts
@@ -141,9 +141,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Post'
         '400':
-          description: Invalid ID supplied
+          description: o id fornecido não é valido
         '404':
-          description: Post not found
+          description: Post não encontrado
     delete:
       tags:
       - Posts
@@ -151,12 +151,6 @@ paths:
       description: Deleta um post existente mantendo suas tags.
       operationId: deletePost
       parameters:
-      - name: api_key
-        in: header
-        description: ''
-        required: false
-        schema:
-          type: string
       - name: postId
         in: path
         description: id do post a ser deletado.
@@ -166,31 +160,32 @@ paths:
           format: int64
       responses:
         '400':
-          description: Invalid post value
-      security:
-      - post_auth:
-        - write:pets
-        - read:pets
+          description: O post selecionado é invalido.
 components:
   schemas:
     Post:
       required:
-      - name
-      - photoUrls
+      - title
+      - author
+      - content
       type: object
       properties:
         id:
           type: integer
           format: int64
-          example: 10
+          example: 1
         title:
           type: string
-          example: doggie
+          example: Notion
         author:
           type: string
-          example: doggie
+          example: Marcia Thiel
+        content:
+          type: string
+          example: Sed soluta nemo et consectetur reprehenderit ea reprehenderit sit. Aut voluptate sit omnis qui repudiandae. Cum sit provident eligendi tenetur facere ut quo. Commodi voluptate ut aut deleniti.
         tags:
           type: array
+          example: ["organization", "planning", "collaboration", "writing", "calendar"]
       xml:
         name: post
     ApiResponse:
@@ -205,26 +200,8 @@ components:
           type: string
       xml:
         name: '##default'
-  requestBodies:
-    Pet:
-      description: Pet object that needs to be added to the store
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Post'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/Post'
   securitySchemes:
-    post_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
+    x-requested-with:
       type: apiKey
-      name: api_key
+      name: x-requested-with
       in: header

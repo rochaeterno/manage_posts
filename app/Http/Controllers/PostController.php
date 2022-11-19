@@ -18,6 +18,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        $posts = Post::all();
         if ($request->query('tag')) {
             $tag = Tag::where('name', '=', strtolower($request->query('tag')))->first();
             if ($tag) {
@@ -27,8 +28,6 @@ class PostController extends Controller
                 })->get();
             }
         }
-
-        $posts = Post::all();
 
         return PostsResource::collection($posts);
     }
